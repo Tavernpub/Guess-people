@@ -1,0 +1,1 @@
+<view class="start-container"><image class="home-image" src="{{a}}" mode="widthFix"></image><button class="start-button" bindtap="{{b}}">开始游戏</button></view>

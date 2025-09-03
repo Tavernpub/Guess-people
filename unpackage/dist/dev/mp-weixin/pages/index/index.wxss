@@ -1,0 +1,21 @@
+
+.start-container {
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 40rpx 30rpx;
+		box-sizing: border-box;
+		background-color: #ffffff;
+}
+.home-image {
+		width: 420rpx;
+		margin-bottom: 60rpx;
+}
+.start-button {
+		width: 60%;
+		background-color: #007aff;
+		color: #ffffff;
+		border: none;
+}

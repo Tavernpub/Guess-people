@@ -1,0 +1,490 @@
+
+.game-container {
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		background-color: #ffffff;
+}
+.top-title { position: fixed; top: var(--title-top); left: 0; right: 0; text-align: center; font-size: 36rpx; color: #333333; z-index: 10;
+}
+.countdown-top { position: fixed; top: var(--countdown-top); left: 0; right: 0; text-align: center; font-size: 120rpx; font-weight: bold;
+}
+.level-indicator { position: fixed; top: var(--level-indicator-top); right: var(--level-indicator-right); background: rgba(0,0,0,0.7); color: white; padding: 8rpx 16rpx; border-radius: 20rpx; font-size: 24rpx; z-index: 10;
+}
+.people-cluster { position: fixed; top: var(--game-area-top); left: 0; right: 0; display: flex; flex-direction: column; align-items: center; z-index: 1;
+}
+.row { display: flex; flex-direction: row; align-items: center; justify-content: center;
+}
+.row-top { margin-bottom: -40rpx;
+}
+.person { width: var(--people-reveal-size); display: block;
+}
+.overlap { margin-left: -40rpx;
+}
+.cover-image { 
+		position: fixed; 
+		top: var(--house-from-top);
+		left: 50%; 
+		transform: translateX(-50%); 
+		width: var(--house-width); 
+		z-index: 7; 
+		transition: top var(--house-drop-duration) var(--house-drop-easing);
+}
+.cover-image.show { 
+		top: var(--house-to-top);
+}
+.cover-image.lift { 
+		top: var(--house-lift-top); 
+		transition: top var(--house-lift-duration) var(--house-lift-easing);
+}
+
+	/* 透明遮罩层：与房子完全一致的尺寸和位置，用于碰撞检测 */
+.house-mask { 
+		position: fixed; 
+		top: var(--house-from-top); 
+		left: 50%; 
+		transform: translateX(-50%); 
+		width: var(--house-width); 
+		height: var(--house-height);
+		z-index: 5; /* 在小人层之上，房子层之下 */
+		transition: top var(--house-drop-duration) var(--house-drop-easing); 
+		background: transparent; /* 完全透明 */
+		pointer-events: none; /* 不影响交互 */
+}
+.house-mask.show { 
+		top: var(--house-to-top);
+}
+.house-mask.lift { 
+		top: var(--house-lift-top); 
+		transition: top var(--house-lift-duration) var(--house-lift-easing);
+}
+.slide-people { position: fixed; top: var(--people-area-top); left: 50%; margin-left: var(--slide-area-margin-left); z-index: 4; width: var(--slide-area-width); height: var(--slide-area-height); pointer-events: none;
+}
+.sperson { 
+		/* 基础定位由模板中的style设置 */
+		width: 165rpx; /* 🔧 修复：使用固定值替代CSS变量 */
+		height: 165rpx; 
+		opacity: 1; 
+		/* 🔧 修复：设置初始位置，避免闪烁 */
+		transform: translate3d(-700rpx, 0, 0);
+		will-change: transform; 
+		-webkit-backface-visibility: hidden; 
+		        backface-visibility: hidden;
+}
+	
+	/* 🔧 新增：通用小人图片样式 */
+.person-image {
+		width: 100%;
+		height: 100%;
+		display: block;
+}
+.sperson.run { animation: slide-pass var(--slide-duration) linear forwards;
+}
+@keyframes slide-pass {
+0% { 
+			transform: translate3d(-700rpx, 0, 0); /* 🔧 修复：使用固定值替代CSS变量 */
+}
+100% { 
+			transform: translate3d(180rpx, 0, 0); /* 🔧 修复：使用固定值替代CSS变量 */
+}
+}
+
+	/* 逃离容器与动画 - 小程序优化版 */
+.escape-people { 
+		position: fixed; 
+		top: var(--people-area-top); 
+		left: 50%; 
+		margin-left: var(--escape-area-margin-left); 
+		width: var(--escape-area-width); 
+		height: var(--escape-area-height); 
+		z-index: 6; 
+		pointer-events: none; 
+		overflow: visible;
+}
+.eperson { 
+		/* 基础定位由模板中的style设置 */
+		width: 165rpx; /* 🔧 修复：使用固定值替代CSS变量 */
+		height: 165rpx;
+		opacity: 1; 
+		/* 减少不必要的硬件加速属性 */
+		transform: translateZ(0);
+		/* 确保图片不会被拉伸 */
+		flex-shrink: 0;
+}
+.pre { 
+		opacity: 1; 
+		transform: translateZ(0);
+}
+	
+	/* 使用更平滑的缓动函数，减少闪烁 */
+.escape-up { 
+		animation: escapeUp var(--escape-duration, var(--slide-duration)) ease-out forwards; 
+		/* 小程序优化：明确指定变换属性 */
+		will-change: transform, opacity;
+}
+.escape-right { 
+		animation: escapeRight var(--escape-duration, var(--slide-duration)) ease-out forwards; 
+		/* 小程序优化：明确指定变换属性 */
+		will-change: transform, opacity;
+}
+	
+	/* 优化关键帧：减少突变，使用更平滑的过渡 */
+@keyframes escapeUp {
+0% { 
+			transform: translate3d(0, 0, 0); 
+			opacity: 1;
+}
+100% { 
+			transform: translate3d(0, -100vh, 0); 
+			opacity: 1;
+}
+}
+@keyframes escapeRight {
+0% { 
+			transform: translate3d(0, 0, 0); 
+			opacity: 1;
+}
+100% { 
+			transform: translate3d(100vw, 0, 0); 
+			opacity: 1;
+}
+}
+
+	/* 揭示层 */
+.reveal-layer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 8; pointer-events: none;
+}
+.reveal-people { position: fixed; top: var(--people-area-top); left: 50%; margin-left: var(--reveal-area-margin-left); width: var(--reveal-area-width); height: var(--reveal-area-height); position: relative;
+}
+.reveal-person { 
+		position: absolute; 
+		width: var(--people-reveal-size); 
+		height: var(--people-reveal-size); 
+		/* 🔧 修复：移除CSS变量，改为在模板中通过style直接设置 */
+		background-size: contain; 
+		background-repeat: no-repeat;
+}
+	/* 🔧 修复：移除CSS变量依赖的red类，改为在模板中动态设置style */
+.reveal-person.red { 
+		/* 保留基础样式，具体的背景和mask通过style设置 */
+		-webkit-mask-repeat: no-repeat; 
+		-webkit-mask-size: contain; 
+		mask-repeat: no-repeat; 
+		mask-size: contain;
+}
+	
+
+	
+	/* 🔧 修复：红色小人图片样式 - 保持小人形状，只改变颜色 */
+.person-image-red {
+		width: 100%;
+		height: 100%;
+		display: block;
+		/* 使用CSS滤镜将黑色小人变为红色 */
+		filter: brightness(0) saturate(100%) invert(27%) sepia(89%) saturate(3642%) hue-rotate(347deg) brightness(99%) contrast(94%);
+		/* 添加激活动画效果 */
+		animation: redActivate 0.5s ease-out;
+}
+@keyframes redActivate {
+0% {
+			transform: scale(0.8);
+			opacity: 0.5;
+}
+50% {
+			transform: scale(1.15);
+}
+100% {
+			transform: scale(1);
+			opacity: 1;
+}
+}
+.reveal-number { position: fixed; top: var(--reveal-number-top); left: 0; right: 0; text-align: center; font-size: 64rpx; font-weight: 700; color: #000;
+}
+
+	/* 🔧 新增：分享复活界面样式 */
+.revival-overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, 0.7);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 999;
+}
+.revival-card {
+		background: white;
+		border-radius: 24rpx;
+		padding: 60rpx 40rpx;
+		margin: 40rpx;
+		max-width: 600rpx;
+		width: 90%;
+		text-align: center;
+		box-shadow: 0 20rpx 40rpx rgba(0, 0, 0, 0.2);
+}
+.revival-title {
+		font-size: 48rpx;
+		font-weight: bold;
+		color: #333;
+		margin-bottom: 20rpx;
+}
+.revival-content {
+		font-size: 32rpx;
+		color: #666;
+		line-height: 1.6;
+		margin-bottom: 40rpx;
+}
+.revival-share-btn {
+		width: 100%;
+		background: transparent;
+		border: 2rpx solid #ddd;
+		color: #666;
+		border-radius: 40rpx;
+		padding: 20rpx;
+		font-size: 28rpx;
+		margin-top: 20rpx;
+		transition: all 0.3s ease;
+}
+.revival-share-btn:active {
+		background: #f5f5f5;
+		transform: scale(0.98);
+}
+.revival-actions {
+		display: flex;
+		gap: 20rpx;
+		margin-top: 20rpx;
+}
+.revival-restart-btn, .revival-quit-btn {
+		flex: 1;
+		background: transparent;
+		border: 2rpx solid #ddd;
+		color: #666;
+		border-radius: 40rpx;
+		padding: 20rpx;
+		font-size: 28rpx;
+		transition: all 0.3s ease;
+}
+.revival-restart-btn:active, .revival-quit-btn:active {
+		background: #f5f5f5;
+		transform: scale(0.98);
+}
+
+	/* 底部画板卡片 */
+.pad-card { position: fixed; left: 0; right: 0; bottom: 0; background: #ffffff; box-shadow: 0 -6rpx 20rpx rgba(0,0,0,0.08); border-top-left-radius: 16rpx; border-top-right-radius: 16rpx; padding: 20rpx 24rpx 34rpx; z-index: 12;
+}
+.pad-header { font-size: 28rpx; color: #333; margin-bottom: 12rpx; text-align: center;
+}
+.canvas-container { position: relative;
+}
+.draw-canvas { width: 686rpx; height: 320rpx; background: #f7f7f7; border-radius: 12rpx; border: 2rpx dashed #ddd;
+}
+.canvas-clear-icon { position: absolute; left: 16rpx; bottom: 16rpx; width: 48rpx; height: 48rpx; opacity: 0.6; z-index: 13;
+}
+.canvas-clear-icon:active { opacity: 1; transform: scale(0.9);
+}
+.pad-result { margin-top: 12rpx; font-size: 28rpx; color: #e53935; font-weight: bold; text-align: center;
+}
+.confirmation-countdown { margin-top: 8rpx; font-size: 24rpx; color: #ff9800; text-align: center; animation: pulse 1s infinite;
+}
+@keyframes pulse {
+0% { opacity: 1;
+}
+50% { opacity: 0.6;
+}
+100% { opacity: 1;
+}
+}
+
+	/* 数字键盘样式 */
+.keyboard-container {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		width: 100vw;
+		z-index: 12;
+		background-color: white;
+		border-radius: 20rpx 20rpx 0 0;
+		box-shadow: 0 -6rpx 20rpx rgba(0,0,0,0.08);
+		overflow: hidden;
+		margin: 0;
+		padding: 0;
+		/* 小程序强制贴底 */
+		transform: translateY(0);
+		-webkit-transform: translateY(0);
+		/* 强制移除小程序默认底部间距 */
+		margin-bottom: 0 !important;
+		padding-bottom: 0 !important;
+}
+
+	/* 输入框区域 */
+.input-display {
+		padding: 15rpx 30rpx;
+		border-bottom: 1rpx solid #f0f0f0;
+		background-color: white;
+}
+.input-box {
+		background-color: #f8f9fa;
+		border: 1rpx solid #e5e5e5;
+		border-radius: 10rpx;
+		padding: 16rpx 24rpx;
+		min-height: 60rpx;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+}
+.input-text {
+		font-size: 36rpx;
+		font-weight: 500;
+		color: #333;
+		text-align: center;
+}
+
+	/* 折叠按钮 */
+.fold-btn {
+		display: flex;
+		justify-content: center;
+		padding: 15rpx 0 8rpx;
+		cursor: pointer;
+}
+.fold-icon {
+		width: 32rpx;
+		height: 32rpx;
+		transition: transform 0.3s ease;
+}
+.fold-icon.rotated {
+		transform: rotate(180deg);
+}
+.keyboard-main {
+		display: flex;
+		gap: 0;
+		padding: 0;
+		margin: 0;
+		position: relative;
+		overflow: hidden;
+}
+.numbers-area {
+		flex: 1;
+		background-color: #f5f5f5;
+}
+.number-row {
+		display: flex;
+}
+.number-btn {
+		flex: 1;
+		height: 90rpx;
+		background-color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 40rpx;
+		font-weight: 500;
+		color: #333;
+		border: 1rpx solid #e5e5e5;
+		margin: -1rpx -1rpx 0 0;
+		-webkit-user-select: none;
+		        user-select: none;
+		transition: all 0.15s ease;
+}
+.number-btn:active {
+		background-color: #f0f0f0;
+		transform: scale(0.95);
+}
+.bottom-row {
+		display: flex;
+}
+.zero-btn {
+		flex: 2;
+		height: 90rpx;
+		background-color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 40rpx;
+		font-weight: 500;
+		color: #333;
+		border: 1rpx solid #e5e5e5;
+		margin: -1rpx -1rpx 0 0;
+		-webkit-user-select: none;
+		        user-select: none;
+		transition: all 0.15s ease;
+}
+.zero-btn:active {
+		background-color: #f0f0f0;
+		transform: scale(0.95);
+}
+.dot-btn {
+		flex: 1;
+		height: 90rpx;
+		background-color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 40rpx;
+		font-weight: 500;
+		color: #333;
+		border: 1rpx solid #e5e5e5;
+		margin: -1rpx 0 0 0;
+		-webkit-user-select: none;
+		        user-select: none;
+		transition: all 0.15s ease;
+}
+.dot-btn:active {
+		background-color: #f0f0f0;
+		transform: scale(0.95);
+}
+.function-area {
+		display: flex;
+		flex-direction: column;
+		width: 160rpx;
+		background-color: #f5f5f5;
+}
+.delete-btn {
+		height: 90rpx;
+		background-color: white;
+		border: 2rpx solid #ddd;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		-webkit-user-select: none;
+		        user-select: none;
+		margin: -1rpx 0 0 -1rpx;
+		position: relative;
+		overflow: hidden;
+		transition: all 0.15s ease;
+}
+.delete-btn:active {
+		background-color: #f0f0f0;
+		transform: scale(0.95);
+}
+.keypad-clear-icon {
+		width: 40rpx;
+		height: 40rpx;
+		display: block;
+		margin: 0;
+		padding: 0;
+}
+.confirm-btn {
+		flex: 1;
+		background: linear-gradient(135deg, #4285f4 0%, #1976d2 100%);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 180rpx;
+		-webkit-user-select: none;
+		        user-select: none;
+		margin: -1rpx 0 0 -1rpx;
+		transition: all 0.15s ease;
+}
+.confirm-btn:active {
+		opacity: 0.8;
+		transform: scale(0.95);
+}
+.confirm-text {
+		color: white;
+		font-size: 32rpx;
+		font-weight: 600;
+}
