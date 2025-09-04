@@ -179,67 +179,73 @@ const _sfc_main = {
    */
   computed: {
     /**
-    * 根组件样式 - 动态设置CSS变量
-    * 用于控制小人滑动动画的持续时间和房屋位置
-    */
+     * 动态设置CSS变量
+     * 用于控制小人滑动动画的持续时间和房屋位置
+     */
     rootStyle() {
       return `
-				--slide-duration: ${this.slideDurationMs}ms;
-				--house-from-top: ${config.HOUSE_CONFIG.animations.initialDrop.fromTop};
-				--house-to-top: ${config.HOUSE_CONFIG.animations.initialDrop.toTop};
-				--house-lift-top: ${config.HOUSE_CONFIG.animations.revealLift.toTop};
-				--house-drop-duration: ${config.HOUSE_CONFIG.animations.initialDrop.duration};
-				--house-lift-duration: ${config.HOUSE_CONFIG.animations.revealLift.duration};
-				--house-drop-easing: ${config.HOUSE_CONFIG.animations.initialDrop.easing};
-				--house-lift-easing: ${config.HOUSE_CONFIG.animations.revealLift.easing};
-				--house-width: ${this.responsiveHouseWidth};
-				--house-height: ${this.responsiveHouseHeight};
-				--people-size: ${config.PEOPLE_CONFIG.appearance.size};
-				--people-reveal-size: ${config.PEOPLE_CONFIG.appearance.revealSize};
-				--people-reveal-color: ${config.PEOPLE_CONFIG.appearance.revealRedColor};
-				--people-image: url('${config.PEOPLE_CONFIG.appearance.defaultImage}');
-				--people-slide-start: ${config.PEOPLE_CONFIG.animations.slideIn.startPosition};
-				--people-slide-end: ${config.PEOPLE_CONFIG.animations.slideIn.endPosition};
-				--people-slide-disappear: ${config.PEOPLE_CONFIG.animations.slideIn.disappearPosition};
-				--game-area-top: ${config.UI_CONFIG.layout.gameAreaTop};
-				--people-area-top: ${config.UI_CONFIG.layout.peopleAreaTop};
-				--title-top: ${config.UI_CONFIG.layout.titleTop};
-				--countdown-top: ${config.UI_CONFIG.layout.countdownTop};
-				--level-indicator-top: ${config.UI_CONFIG.layout.levelIndicatorTop};
-				--level-indicator-right: ${config.UI_CONFIG.layout.levelIndicatorRight};
-				--reveal-number-top: ${config.UI_CONFIG.layout.revealNumberTop};
-				--slide-area-width: ${config.UI_CONFIG.layout.slideAreaWidth};
-				--slide-area-height: ${config.UI_CONFIG.layout.slideAreaHeight};
-				--slide-area-margin-left: ${config.UI_CONFIG.layout.slideAreaMarginLeft};
-				--escape-area-width: ${config.UI_CONFIG.layout.escapeAreaWidth};
-				--escape-area-height: ${config.UI_CONFIG.layout.escapeAreaHeight};
-				--escape-area-margin-left: ${config.UI_CONFIG.layout.escapeAreaMarginLeft};
-				--reveal-area-width: ${config.UI_CONFIG.layout.revealAreaWidth};
-				--reveal-area-height: ${config.UI_CONFIG.layout.revealAreaHeight};
-				--reveal-area-margin-left: ${config.UI_CONFIG.layout.revealAreaMarginLeft};
-			`.replace(/\s+/g, " ").trim();
+            --slide-duration: ${this.slideDurationMs}ms;
+            --house-from-top: ${config.HOUSE_CONFIG.animations.initialDrop.fromTop};
+            --house-to-top: ${config.HOUSE_CONFIG.animations.initialDrop.toTop};
+            --house-lift-top: ${config.HOUSE_CONFIG.animations.revealLift.toTop};
+            --house-drop-duration: ${config.HOUSE_CONFIG.animations.initialDrop.duration};
+            --house-lift-duration: ${config.HOUSE_CONFIG.animations.revealLift.duration};
+            --house-drop-easing: ${config.HOUSE_CONFIG.animations.initialDrop.easing};
+            --house-lift-easing: ${config.HOUSE_CONFIG.animations.revealLift.easing};
+            --house-width: ${config.HOUSE_CONFIG.width};
+            --house-height: ${config.HOUSE_CONFIG.height};
+            --people-size: ${config.PEOPLE_CONFIG.appearance.size};
+            --people-reveal-size: ${config.PEOPLE_CONFIG.appearance.revealSize};
+            --people-reveal-color: ${config.PEOPLE_CONFIG.appearance.revealRedColor};
+            --people-slide-start: ${config.PEOPLE_CONFIG.animations.slideIn.startPosition};
+            --people-slide-end: ${config.PEOPLE_CONFIG.animations.slideIn.endPosition};
+            --people-slide-disappear: ${config.PEOPLE_CONFIG.animations.slideIn.disappearPosition};
+            --people-reveal-red-color: ${config.PEOPLE_CONFIG.appearance.revealRedColor};
+            --game-area-top: ${config.UI_CONFIG.layout.gameAreaTop};
+            --people-area-top: ${config.UI_CONFIG.layout.peopleAreaTop};
+            --title-top: ${config.UI_CONFIG.layout.titleTop};
+            --countdown-top: ${config.UI_CONFIG.layout.countdownTop};
+            --level-indicator-top: ${config.UI_CONFIG.layout.levelIndicatorTop};
+            --level-indicator-right: ${config.UI_CONFIG.layout.levelIndicatorRight};
+            --reveal-number-top: ${config.UI_CONFIG.layout.revealNumberTop};
+            --slide-area-width: ${config.UI_CONFIG.layout.slideAreaWidth};
+            --slide-area-height: ${config.UI_CONFIG.layout.slideAreaHeight};
+            --slide-area-margin-left: ${config.UI_CONFIG.layout.slideAreaMarginLeft};
+            --escape-area-width: ${config.UI_CONFIG.layout.escapeAreaWidth};
+            --escape-area-height: ${config.UI_CONFIG.layout.escapeAreaHeight};
+            --escape-area-margin-left: ${config.UI_CONFIG.layout.escapeAreaMarginLeft};
+            --reveal-area-width: ${config.UI_CONFIG.layout.revealAreaWidth};
+            --reveal-area-height: ${config.UI_CONFIG.layout.revealAreaHeight};
+            --reveal-area-margin-left: ${config.UI_CONFIG.layout.revealAreaMarginLeft};
+        `.replace(/\s+/g, " ").trim();
     },
     /**
      * 响应式房屋宽度 - 根据屏幕尺寸动态计算
+     * 基于屏幕宽度的比例，确保房屋在不同分辨率下都有合适的大小
+     * 标准宽度375px对应560rpx，按比例缩放
      */
     responsiveHouseWidth() {
       if (!this.screenInfo.windowWidth)
         return config.HOUSE_CONFIG.width;
       const baseWidth = 375;
-      const baseHouseWidth = 560;
+      const baseHouseWidth = parseInt(config.HOUSE_CONFIG.width) || 560;
       const scale = Math.max(0.8, Math.min(1.5, this.screenInfo.windowWidth / baseWidth));
       return Math.round(baseHouseWidth * scale) + "rpx";
     },
     /**
      * 响应式房屋高度 - 确保能完全覆盖小人
+     * 计算逻辑：
+     * 1. 计算小人区域的高度
+     * 2. 房屋高度至少要比小人区域高30%，确保完全覆盖
+     * 3. 根据屏幕高度调整，确保在小屏幕上房屋不会太大
      */
     responsiveHouseHeight() {
       if (!this.screenInfo.windowHeight)
         return config.HOUSE_CONFIG.height;
-      const peopleSize = 165;
+      const peopleSize = parseInt(config.PEOPLE_CONFIG.appearance.size) || 165;
       const peopleAreaHeight = peopleSize * 2 + 40;
       const minHouseHeight = Math.round(peopleAreaHeight * 1.3);
-      const baseHouseHeight = 330;
+      const baseHouseHeight = parseInt(config.HOUSE_CONFIG.height) || 330;
       const maxScreenRatio = 0.45;
       const maxHouseHeight = Math.round(this.screenInfo.windowHeight * maxScreenRatio * (750 / this.screenInfo.windowWidth));
       const finalHeight = Math.max(minHouseHeight, Math.min(baseHouseHeight, maxHouseHeight));
@@ -264,7 +270,7 @@ const _sfc_main = {
   onShow() {
     if (this._isRevivalShare && this.revivalData.isReviving) {
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:430", "📱 [Share] 检测到分享完成，处理复活逻辑");
+        common_vendor.index.__f__("log", "at pages/index/game.vue:434", "📱 [Share] 检测到分享完成，处理复活逻辑");
       }
       setTimeout(() => {
         common_vendor.index.showToast({
@@ -287,8 +293,8 @@ const _sfc_main = {
    */
   onShareAppMessage(res) {
     {
-      common_vendor.index.__f__("log", "at pages/index/game.vue:462", "📱 [Share] onShareAppMessage 被调用", res);
-      common_vendor.index.__f__("log", "at pages/index/game.vue:463", "📱 [Share] 当前环境信息:", {
+      common_vendor.index.__f__("log", "at pages/index/game.vue:466", "📱 [Share] onShareAppMessage 被调用", res);
+      common_vendor.index.__f__("log", "at pages/index/game.vue:467", "📱 [Share] 当前环境信息:", {
         userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "undefined",
         wxExists: typeof common_vendor.wx$1 !== "undefined",
         shareAppMessageExists: typeof common_vendor.wx$1 !== "undefined" && typeof common_vendor.wx$1.shareAppMessage !== "undefined"
@@ -297,22 +303,22 @@ const _sfc_main = {
     const shareContent = this.getShareContent();
     if (res.from === "button") {
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:477", "📱 [Share] 分享来源：页面内分享按钮");
-        common_vendor.index.__f__("log", "at pages/index/game.vue:478", "📱 [Share] 分享按钮目标:", res.target);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:481", "📱 [Share] 分享来源：页面内分享按钮");
+        common_vendor.index.__f__("log", "at pages/index/game.vue:482", "📱 [Share] 分享按钮目标:", res.target);
       }
       if (this.revivalData.isReviving) {
         {
-          common_vendor.index.__f__("log", "at pages/index/game.vue:484", "📱 [Share] 检测到分享复活流程，将在分享完成后处理复活逻辑");
+          common_vendor.index.__f__("log", "at pages/index/game.vue:488", "📱 [Share] 检测到分享复活流程，将在分享完成后处理复活逻辑");
         }
         this._isRevivalShare = true;
       }
     } else if (res.from === "menu") {
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:492", "📱 [Share] 分享来源：右上角分享按钮");
+        common_vendor.index.__f__("log", "at pages/index/game.vue:496", "📱 [Share] 分享来源：右上角分享按钮");
       }
       if (this._waitingForTopShare) {
         {
-          common_vendor.index.__f__("log", "at pages/index/game.vue:498", "📱 [Share] 检测到用户使用右上角分享，将在分享完成后处理复活逻辑");
+          common_vendor.index.__f__("log", "at pages/index/game.vue:502", "📱 [Share] 检测到用户使用右上角分享，将在分享完成后处理复活逻辑");
         }
         this._isRevivalShare = true;
         this._waitingForTopShare = false;
@@ -330,7 +336,7 @@ const _sfc_main = {
       shareData.desc = shareContent.desc;
     }
     {
-      common_vendor.index.__f__("log", "at pages/index/game.vue:519", "📱 [Share] 返回分享内容:", shareData);
+      common_vendor.index.__f__("log", "at pages/index/game.vue:523", "📱 [Share] 返回分享内容:", shareData);
     }
     return shareData;
   },
@@ -345,19 +351,19 @@ const _sfc_main = {
   enableShareMenu() {
     try {
       if (config.REVIVAL_CONFIG.debug.enableLogging) {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:537", "📱 [Share] 启用右上角分享菜单");
+        common_vendor.index.__f__("log", "at pages/index/game.vue:541", "📱 [Share] 启用右上角分享菜单");
       }
       common_vendor.index.showShareMenu({
         withShareTicket: true,
         // 支持群聊分享，默认为 false
         success: () => {
           if (config.REVIVAL_CONFIG.debug.enableLogging) {
-            common_vendor.index.__f__("log", "at pages/index/game.vue:546", "✅ [Share] uni.showShareMenu 启用成功");
+            common_vendor.index.__f__("log", "at pages/index/game.vue:550", "✅ [Share] uni.showShareMenu 启用成功");
           }
         },
         fail: (err) => {
           if (config.REVIVAL_CONFIG.debug.enableLogging) {
-            common_vendor.index.__f__("log", "at pages/index/game.vue:551", "❌ [Share] uni.showShareMenu 启用失败:", err);
+            common_vendor.index.__f__("log", "at pages/index/game.vue:555", "❌ [Share] uni.showShareMenu 启用失败:", err);
           }
         }
       });
@@ -366,19 +372,19 @@ const _sfc_main = {
           withShareTicket: true,
           success: () => {
             if (config.REVIVAL_CONFIG.debug.enableLogging) {
-              common_vendor.index.__f__("log", "at pages/index/game.vue:562", "✅ [Share] wx.showShareMenu 启用成功");
+              common_vendor.index.__f__("log", "at pages/index/game.vue:566", "✅ [Share] wx.showShareMenu 启用成功");
             }
           },
           fail: (err) => {
             if (config.REVIVAL_CONFIG.debug.enableLogging) {
-              common_vendor.index.__f__("log", "at pages/index/game.vue:567", "❌ [Share] wx.showShareMenu 启用失败:", err);
+              common_vendor.index.__f__("log", "at pages/index/game.vue:571", "❌ [Share] wx.showShareMenu 启用失败:", err);
             }
           }
         });
       }
     } catch (error) {
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:574", "❌ [Share] 启用分享菜单异常:", error);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:578", "❌ [Share] 启用分享菜单异常:", error);
       }
     }
   },
@@ -411,10 +417,10 @@ const _sfc_main = {
           pixelRatio: systemInfo.pixelRatio || 1
         };
         if (config.DEBUG_CONFIG.enabled && config.DEBUG_CONFIG.performance.enableVerboseLogging) {
-          common_vendor.index.__f__("log", "at pages/index/game.vue:610", "📱 [Screen] 屏幕信息:", this.screenInfo);
+          common_vendor.index.__f__("log", "at pages/index/game.vue:614", "📱 [Screen] 屏幕信息:", this.screenInfo);
         }
       } catch (error) {
-        common_vendor.index.__f__("error", "at pages/index/game.vue:613", "📱 [Screen] 获取屏幕信息失败:", error);
+        common_vendor.index.__f__("error", "at pages/index/game.vue:617", "📱 [Screen] 获取屏幕信息失败:", error);
         this.screenInfo = {
           windowWidth: 375,
           windowHeight: 667,
@@ -600,7 +606,7 @@ const _sfc_main = {
       this.totalWavesTarget = this.getCurrentLevelWaves();
       this.totalEscapeWavesTarget = this.getCurrentLevelEscapes();
       this.slideDurationMs = this.getEntryDuration();
-      common_vendor.index.__f__("log", "at pages/index/game.vue:850", `🎮 [Level ${this.currentLevel}] 游戏开始 - 目标波数: ${this.totalWavesTarget}, 逃离波数: ${this.totalEscapeWavesTarget}, 初始小人: ${this.basePeopleInHouse}, 进入速度: ${this.slideDurationMs}ms`);
+      common_vendor.index.__f__("log", "at pages/index/game.vue:854", `🎮 [Level ${this.currentLevel}] 游戏开始 - 目标波数: ${this.totalWavesTarget}, 逃离波数: ${this.totalEscapeWavesTarget}, 初始小人: ${this.basePeopleInHouse}, 进入速度: ${this.slideDurationMs}ms`);
       this.finalCount = null;
       this.showResult = false;
       this.recognizedDigit = null;
@@ -670,7 +676,7 @@ const _sfc_main = {
       this.totalEntered += count;
       const baseSpeed = config.PEOPLE_CONFIG.animations.slideIn.speed.base;
       const speedChange = ((baseSpeed - this.slideDurationMs) / baseSpeed * 100).toFixed(1);
-      common_vendor.index.__f__("log", "at pages/index/game.vue:947", `📥 [Wave ${this.wavesLaunched}/${this.totalWavesTarget}] 小人进入 - 本波: ${count}人 (${grouped ? "成组" : "独立"}), 累计进入: ${this.totalEntered}人, 速度: ${this.slideDurationMs}ms (较基础速度${speedChange > 0 ? "加快" : "减慢"}${Math.abs(speedChange)}%)`);
+      common_vendor.index.__f__("log", "at pages/index/game.vue:951", `📥 [Wave ${this.wavesLaunched}/${this.totalWavesTarget}] 小人进入 - 本波: ${count}人 (${grouped ? "成组" : "独立"}), 累计进入: ${this.totalEntered}人, 速度: ${this.slideDurationMs}ms (较基础速度${speedChange > 0 ? "加快" : "减慢"}${Math.abs(speedChange)}%)`);
       this.launchingNextWave = false;
       const waveId = Date.now() + Math.random();
       this.currentWaveId = waveId;
@@ -765,7 +771,7 @@ const _sfc_main = {
           if (this.gameFinished)
             return;
           {
-            common_vendor.index.__f__("log", "at pages/index/game.vue:1062", "[game] next wave with", nextCount, "grouped=", nextGrouped);
+            common_vendor.index.__f__("log", "at pages/index/game.vue:1066", "[game] next wave with", nextCount, "grouped=", nextGrouped);
           }
           this.launchWave({
             count: nextCount,
@@ -775,7 +781,7 @@ const _sfc_main = {
         this.waveTimers.push(t);
       } else {
         this.wavesFinished = true;
-        common_vendor.index.__f__("log", "at pages/index/game.vue:1072", `🌊 [Waves Complete] 所有进入波次完成 (${this.wavesLaunched}/${this.totalWavesTarget})`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:1076", `🌊 [Waves Complete] 所有进入波次完成 (${this.wavesLaunched}/${this.totalWavesTarget})`);
         this.tryFinalize();
       }
     },
@@ -788,7 +794,7 @@ const _sfc_main = {
       this.movingPeople = this.movingPeople.filter((p) => p.alive);
       const afterCount = this.movingPeople.length;
       if (beforeCount !== afterCount) {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:1087", `🧹 [Cleanup] 清理已死亡小人: ${beforeCount} -> ${afterCount}`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:1091", `🧹 [Cleanup] 清理已死亡小人: ${beforeCount} -> ${afterCount}`);
       }
     },
     // ==================== 小人逃离控制系统 ====================
@@ -858,7 +864,7 @@ const _sfc_main = {
         this.escapeTimers.push(t);
       });
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:1184", `[Level ${this.currentLevel}] Scheduled ${totalEscapes} escapes: ${upCount} up, ${rightCount} right (mode: ${config$1.mode})`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:1188", `[Level ${this.currentLevel}] Scheduled ${totalEscapes} escapes: ${upCount} up, ${rightCount} right (mode: ${config$1.mode})`);
       }
     },
     // ==================== 遮罩层碰撞检测系统 ====================
@@ -897,7 +903,7 @@ const _sfc_main = {
           this.activeAliveCount -= 1;
           clearInterval(tracker);
           {
-            common_vendor.index.__f__("log", "at pages/index/game.vue:1240", `🏠 [Disappear] 小人${person.id} 到达消失位置，瞬间消失: 基础位置${basePos.toFixed(1)}, 视觉位置${visualPos.toFixed(1)}, 消失位置${disappearPos}, 偏移${personOffset}`);
+            common_vendor.index.__f__("log", "at pages/index/game.vue:1244", `🏠 [Disappear] 小人${person.id} 到达消失位置，瞬间消失: 基础位置${basePos.toFixed(1)}, 视觉位置${visualPos.toFixed(1)}, 消失位置${disappearPos}, 偏移${personOffset}`);
           }
         }
         if (progress >= 1) {
@@ -906,7 +912,7 @@ const _sfc_main = {
             person.alive = false;
             this.activeAliveCount -= 1;
             {
-              common_vendor.index.__f__("log", "at pages/index/game.vue:1252", `🏠 [Disappear] 小人${person.id} 动画完成，强制消失`);
+              common_vendor.index.__f__("log", "at pages/index/game.vue:1256", `🏠 [Disappear] 小人${person.id} 动画完成，强制消失`);
             }
           }
           clearInterval(tracker);
@@ -1015,7 +1021,7 @@ const _sfc_main = {
       }
       const finalDuration = Math.max(speedConfig.minDuration, Math.min(duration, speedConfig.maxDuration));
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:1448", `🎯 [Entry Speed] Level ${this.currentLevel}: base=${speedConfig.base}ms, calculated=${Math.round(duration)}ms, final=${finalDuration}ms, mode=${progression.mode}`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:1452", `🎯 [Entry Speed] Level ${this.currentLevel}: base=${speedConfig.base}ms, calculated=${Math.round(duration)}ms, final=${finalDuration}ms, mode=${progression.mode}`);
       }
       return finalDuration;
     },
@@ -1040,7 +1046,7 @@ const _sfc_main = {
       const speedConfig = config.PEOPLE_CONFIG.animations.escape.speed;
       const baseSpeed = speedConfig.base;
       const speedChange = ((baseSpeed - escapeDuration) / baseSpeed * 100).toFixed(1);
-      common_vendor.index.__f__("log", "at pages/index/game.vue:1480", `📤 [Escape ${this.escapeWavesLaunched}/${this.totalEscapeWavesTarget}] 小人逃离 - 方向: ${dir === "up" ? "向上" : "向右"}, 速度: ${escapeDuration}ms (较基础速度${speedChange > 0 ? "加快" : "减慢"}${Math.abs(speedChange)}%), 累计逃离: ${this.totalEscaped}人`);
+      common_vendor.index.__f__("log", "at pages/index/game.vue:1484", `📤 [Escape ${this.escapeWavesLaunched}/${this.totalEscapeWavesTarget}] 小人逃离 - 方向: ${dir === "up" ? "向上" : "向右"}, 速度: ${escapeDuration}ms (较基础速度${speedChange > 0 ? "加快" : "减慢"}${Math.abs(speedChange)}%), 累计逃离: ${this.totalEscaped}人`);
       const startPos = config.PEOPLE_CONFIG.animations.escape.startPositions[dir];
       const startLeft = startPos.left;
       const startTop = startPos.top;
@@ -1106,11 +1112,11 @@ const _sfc_main = {
         this.clearEscapeDispatcher();
         const final = this.basePeopleInHouse + this.totalEntered - this.totalEscaped;
         this.finalCount = Math.max(0, final);
-        common_vendor.index.__f__("log", "at pages/index/game.vue:1554", `🏁 [Level ${this.currentLevel}] 游戏结束 - 初始: ${this.basePeopleInHouse}人, 进入: ${this.totalEntered}人, 逃离: ${this.totalEscaped}人`);
-        common_vendor.index.__f__("log", "at pages/index/game.vue:1555", `🏠 [Final Count] 最终房屋内小人数量: ${this.finalCount}人`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:1558", `🏁 [Level ${this.currentLevel}] 游戏结束 - 初始: ${this.basePeopleInHouse}人, 进入: ${this.totalEntered}人, 逃离: ${this.totalEscaped}人`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:1559", `🏠 [Final Count] 最终房屋内小人数量: ${this.finalCount}人`);
         this.showResult = true;
         this.recognitionHandled = false;
-        common_vendor.index.__f__("log", "at pages/index/game.vue:1558", `⌨️ [Input] 进入答题阶段 - showResult: ${this.showResult}, inputMode: ${this.inputMode}`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:1562", `⌨️ [Input] 进入答题阶段 - showResult: ${this.showResult}, inputMode: ${this.inputMode}`);
         if (this.inputMode === 0) {
           this.$nextTick(() => {
             this.setupCanvas && this.setupCanvas();
@@ -1122,7 +1128,7 @@ const _sfc_main = {
         } else {
           this.keypadInput = "";
           this.keypadConfirmed = false;
-          common_vendor.index.__f__("log", "at pages/index/game.vue:1571", `⌨️ [Keypad] 数字键盘初始化 - keypadExpanded: ${this.keypadExpanded}`);
+          common_vendor.index.__f__("log", "at pages/index/game.vue:1575", `⌨️ [Keypad] 数字键盘初始化 - keypadExpanded: ${this.keypadExpanded}`);
         }
       }
     },
@@ -1131,12 +1137,12 @@ const _sfc_main = {
       const query = common_vendor.index.createSelectorQuery().in(this);
       query.select("#digitCanvas").fields({ node: true, size: true, rect: true }).exec((res) => {
         if (!res || !res[0]) {
-          common_vendor.index.__f__("error", "at pages/index/game.vue:1581", "[Canvas] Failed to get canvas node");
+          common_vendor.index.__f__("error", "at pages/index/game.vue:1585", "[Canvas] Failed to get canvas node");
           return;
         }
         const canvas = res[0].node;
         if (!canvas) {
-          common_vendor.index.__f__("error", "at pages/index/game.vue:1586", "[Canvas] Canvas node is null");
+          common_vendor.index.__f__("error", "at pages/index/game.vue:1590", "[Canvas] Canvas node is null");
           return;
         }
         const dpr = common_vendor.index.getWindowInfo().pixelRatio || 1;
@@ -1149,7 +1155,7 @@ const _sfc_main = {
         this._dpr = dpr;
         const ctx = canvas.getContext("2d");
         if (!ctx) {
-          common_vendor.index.__f__("error", "at pages/index/game.vue:1603", "[Canvas] Failed to get 2d context");
+          common_vendor.index.__f__("error", "at pages/index/game.vue:1607", "[Canvas] Failed to get 2d context");
           return;
         }
         ctx.scale(dpr, dpr);
@@ -1212,7 +1218,7 @@ const _sfc_main = {
      */
     onCanvasTouchStart(e) {
       if (!this.ctx) {
-        common_vendor.index.__f__("error", "at pages/index/game.vue:1680", "[Canvas] No context available for drawing");
+        common_vendor.index.__f__("error", "at pages/index/game.vue:1684", "[Canvas] No context available for drawing");
         return;
       }
       if (this._recognizeTimer) {
@@ -1299,7 +1305,7 @@ const _sfc_main = {
      */
     clearCanvas() {
       if (!this.ctx) {
-        common_vendor.index.__f__("error", "at pages/index/game.vue:1796", "[Canvas] No context available for clearing");
+        common_vendor.index.__f__("error", "at pages/index/game.vue:1800", "[Canvas] No context available for clearing");
         return;
       }
       const drawConfig = config.CANVAS_CONFIG.drawing;
@@ -1408,7 +1414,7 @@ const _sfc_main = {
       }
       this.recognizedDigit = text;
       if (text) {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:1917", `🤖 [AI Recognition] 识别结果: "${text}"`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:1921", `🤖 [AI Recognition] 识别结果: "${text}"`);
       }
       const num = parseInt(text);
       if (!isNaN(num) && num >= 0 && num <= 100) {
@@ -1449,7 +1455,7 @@ const _sfc_main = {
       this.recognitionHandled = true;
       this.clearConfirmationTimer();
       const isCorrect = Number(pred) === Number(this.finalCount);
-      common_vendor.index.__f__("log", "at pages/index/game.vue:1969", `📝 [Answer] 用户答案: ${pred}, 正确答案: ${this.finalCount}, 结果: ${isCorrect ? "✅正确" : "❌错误"}`);
+      common_vendor.index.__f__("log", "at pages/index/game.vue:1973", `📝 [Answer] 用户答案: ${pred}, 正确答案: ${this.finalCount}, 结果: ${isCorrect ? "✅正确" : "❌错误"}`);
       setTimeout(() => {
         this.startRevealSequence(isCorrect);
       }, config.BALANCE_CONFIG.flow.autoProgressDelay);
@@ -1487,7 +1493,7 @@ const _sfc_main = {
           const showModal = () => {
             if (isCorrect) {
               this.currentLevel += 1;
-              common_vendor.index.__f__("log", "at pages/index/game.vue:2020", `🎉 [Level Up] 恭喜通过第${this.currentLevel - 1}关，进入第${this.currentLevel}关！`);
+              common_vendor.index.__f__("log", "at pages/index/game.vue:2024", `🎉 [Level Up] 恭喜通过第${this.currentLevel - 1}关，进入第${this.currentLevel}关！`);
               this._modalShown = true;
               common_vendor.index.showModal({
                 title: `第${this.currentLevel - 1}关通过！`,
@@ -1505,7 +1511,7 @@ const _sfc_main = {
                   }
                 },
                 fail: (err) => {
-                  common_vendor.index.__f__("error", "at pages/index/game.vue:2042", `[Game] Modal failed:`, err);
+                  common_vendor.index.__f__("error", "at pages/index/game.vue:2046", `[Game] Modal failed:`, err);
                   this._modalShown = false;
                   this.clearRevealState && this.clearRevealState();
                   this.startCountdown && this.startCountdown();
@@ -1514,12 +1520,12 @@ const _sfc_main = {
             } else {
               const failedLevel = this.currentLevel;
               this.recordFailure();
-              common_vendor.index.__f__("log", "at pages/index/game.vue:2055", `💥 [Game Over] 第${failedLevel}关失败`);
+              common_vendor.index.__f__("log", "at pages/index/game.vue:2059", `💥 [Game Over] 第${failedLevel}关失败`);
               if (this.canUseRevival()) {
                 this.showRevivalModal(failedLevel);
               } else {
                 this.currentLevel = 1;
-                common_vendor.index.__f__("log", "at pages/index/game.vue:2064", `💥 [Game Over] 第${failedLevel}关失败，重置到第1关`);
+                common_vendor.index.__f__("log", "at pages/index/game.vue:2068", `💥 [Game Over] 第${failedLevel}关失败，重置到第1关`);
                 this.showGameOverModal(failedLevel);
               }
             }
@@ -2280,7 +2286,7 @@ const _sfc_main = {
       }
       this.keypadConfirmed = true;
       this.recognizedDigit = this.keypadInput;
-      common_vendor.index.__f__("log", "at pages/index/game.vue:2895", `⌨️  [Keypad] 数字键盘输入: "${this.keypadInput}" -> ${inputNumber}`);
+      common_vendor.index.__f__("log", "at pages/index/game.vue:2899", `⌨️  [Keypad] 数字键盘输入: "${this.keypadInput}" -> ${inputNumber}`);
       const compareNumber = Math.floor(inputNumber);
       setTimeout(() => {
         this.handleRecognitionResult(compareNumber);
@@ -2378,7 +2384,7 @@ const _sfc_main = {
             const today = (/* @__PURE__ */ new Date()).toDateString();
             if (data.lastResetDate !== today) {
               if (config.REVIVAL_CONFIG.debug.enableLogging) {
-                common_vendor.index.__f__("log", "at pages/index/game.vue:3002", "🔄 [Revival] 新的一天，重置复活数据");
+                common_vendor.index.__f__("log", "at pages/index/game.vue:3006", "🔄 [Revival] 新的一天，重置复活数据");
               }
               this.revivalData = {
                 totalFailures: 0,
@@ -2397,7 +2403,7 @@ const _sfc_main = {
             isReviving: false
           };
           if (config.REVIVAL_CONFIG.debug.enableLogging) {
-            common_vendor.index.__f__("log", "at pages/index/game.vue:3023", "📊 [Revival] 加载复活数据:", this.revivalData);
+            common_vendor.index.__f__("log", "at pages/index/game.vue:3027", "📊 [Revival] 加载复活数据:", this.revivalData);
           }
         } else {
           this.revivalData = {
@@ -2409,7 +2415,7 @@ const _sfc_main = {
           this.saveRevivalData();
         }
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/game.vue:3036", "[Revival] 加载复活数据失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/game.vue:3040", "[Revival] 加载复活数据失败:", e);
         this.revivalData = {
           totalFailures: 0,
           totalRevivals: 0,
@@ -2428,10 +2434,10 @@ const _sfc_main = {
         });
         common_vendor.index.setStorageSync(config.REVIVAL_CONFIG.limits.storageKey, dataToStore);
         if (config.REVIVAL_CONFIG.debug.enableLogging) {
-          common_vendor.index.__f__("log", "at pages/index/game.vue:3074", "💾 [Revival] 保存复活数据:", this.revivalData);
+          common_vendor.index.__f__("log", "at pages/index/game.vue:3078", "💾 [Revival] 保存复活数据:", this.revivalData);
         }
       } catch (e) {
-        common_vendor.index.__f__("error", "at pages/index/game.vue:3077", "[Revival] 保存复活数据失败:", e);
+        common_vendor.index.__f__("error", "at pages/index/game.vue:3081", "[Revival] 保存复活数据失败:", e);
       }
     },
     // 检查是否可以使用分享复活
@@ -2439,7 +2445,7 @@ const _sfc_main = {
       const limits = config.REVIVAL_CONFIG.limits;
       if (this.revivalData.totalFailures >= limits.maxFailures) {
         {
-          common_vendor.index.__f__("log", "at pages/index/game.vue:3090", `❌ [Revival] 失败次数已达上限 (${this.revivalData.totalFailures}/${limits.maxFailures})`);
+          common_vendor.index.__f__("log", "at pages/index/game.vue:3094", `❌ [Revival] 失败次数已达上限 (${this.revivalData.totalFailures}/${limits.maxFailures})`);
         }
         return false;
       }
@@ -2450,7 +2456,7 @@ const _sfc_main = {
       this.revivalData.totalFailures += 1;
       this.saveRevivalData();
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:3114", `📈 [Revival] 记录失败，当前失败次数: ${this.revivalData.totalFailures}`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:3118", `📈 [Revival] 记录失败，当前失败次数: ${this.revivalData.totalFailures}`);
       }
     },
     /**
@@ -2473,13 +2479,13 @@ const _sfc_main = {
       }
       this.revivalData.isReviving = true;
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:3145", "🔗 [Revival] 开始分享复活流程");
+        common_vendor.index.__f__("log", "at pages/index/game.vue:3149", "🔗 [Revival] 开始分享复活流程");
       }
     },
     // 🔧 新增：处理重新开始游戏
     restartGame() {
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:3152", "🔄 [Restart] 用户选择重新开始游戏");
+        common_vendor.index.__f__("log", "at pages/index/game.vue:3156", "🔄 [Restart] 用户选择重新开始游戏");
       }
       this.revivalData.isReviving = false;
       this.currentLevel = 1;
@@ -2489,7 +2495,7 @@ const _sfc_main = {
     // 🔧 新增：处理退出游戏
     quitGame() {
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:3169", "🚪 [Quit] 用户选择退出游戏");
+        common_vendor.index.__f__("log", "at pages/index/game.vue:3173", "🚪 [Quit] 用户选择退出游戏");
       }
       this.revivalData.isReviving = false;
       common_vendor.index.reLaunch({ url: "/pages/index/index" });
@@ -2538,7 +2544,7 @@ const _sfc_main = {
     // 分享成功回调
     onShareSuccess() {
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:3234", "✅ [Revival] 分享成功");
+        common_vendor.index.__f__("log", "at pages/index/game.vue:3238", "✅ [Revival] 分享成功");
       }
       this.revivalData.totalRevivals += 1;
       this.revivalData.isReviving = false;
@@ -2549,14 +2555,14 @@ const _sfc_main = {
         duration: 2e3
       });
       setTimeout(() => {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:3251", `🎉 [Revival] 复活成功，继续第${this.currentLevel}关！`);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:3255", `🎉 [Revival] 复活成功，继续第${this.currentLevel}关！`);
         this.startCountdown && this.startCountdown();
       }, 2e3);
     },
     // 分享失败回调
     onShareFail(err) {
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:3259", "❌ [Revival] 分享失败:", err);
+        common_vendor.index.__f__("log", "at pages/index/game.vue:3263", "❌ [Revival] 分享失败:", err);
       }
       this.revivalData.isReviving = false;
       common_vendor.index.showToast({
@@ -2591,7 +2597,7 @@ const _sfc_main = {
       this.revivalData.isReviving = true;
       this._modalShown = false;
       {
-        common_vendor.index.__f__("log", "at pages/index/game.vue:3331", "📱 [Revival] 分享复活界面已显示，等待用户点击分享按钮");
+        common_vendor.index.__f__("log", "at pages/index/game.vue:3335", "📱 [Revival] 分享复活界面已显示，等待用户点击分享按钮");
       }
     },
     // 显示游戏结束弹窗（不能复活时）
@@ -2622,7 +2628,7 @@ const _sfc_main = {
           }
         },
         fail: (err) => {
-          common_vendor.index.__f__("error", "at pages/index/game.vue:3368", `[Game] Modal failed:`, err);
+          common_vendor.index.__f__("error", "at pages/index/game.vue:3372", `[Game] Modal failed:`, err);
           this._modalShown = false;
           this.clearRevealState && this.clearRevealState();
           this.startCountdown && this.startCountdown();

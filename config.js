@@ -545,7 +545,7 @@ export const PEOPLE_CONFIG = {
 export const HOUSE_CONFIG = {
 	// 房屋图片
 	image: '/static/home.png', // 房屋图片路径
-	width: '570rpx', // 房屋宽度
+	width: '560rpx', // 房屋宽度
 	height: '340rpx', // 房屋高度（用于透明遮罩层碰撞检测）
 	
 	// 透明遮罩层配置

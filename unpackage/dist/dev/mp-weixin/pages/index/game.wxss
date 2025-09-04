@@ -24,99 +24,98 @@
 .overlap { margin-left: -40rpx;
 }
 .cover-image { 
-		position: fixed; 
-		top: var(--house-from-top);
-		left: 50%; 
-		transform: translateX(-50%); 
-		width: var(--house-width); 
-		z-index: 7; 
-		transition: top var(--house-drop-duration) var(--house-drop-easing);
+    position: fixed; 
+    top: var(--house-from-top);
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: var(--house-width); 
+    z-index: 7; 
+    transition: top var(--house-drop-duration) var(--house-drop-easing);
 }
 .cover-image.show { 
-		top: var(--house-to-top);
+    top: var(--house-to-top);
 }
 .cover-image.lift { 
-		top: var(--house-lift-top); 
-		transition: top var(--house-lift-duration) var(--house-lift-easing);
+    top: var(--house-lift-top); 
+    transition: top var(--house-lift-duration) var(--house-lift-easing);
 }
 
-	/* 透明遮罩层：与房子完全一致的尺寸和位置，用于碰撞检测 */
+/* 透明遮罩层：与房子完全一致的尺寸和位置，用于碰撞检测 */
 .house-mask { 
-		position: fixed; 
-		top: var(--house-from-top); 
-		left: 50%; 
-		transform: translateX(-50%); 
-		width: var(--house-width); 
-		height: var(--house-height);
-		z-index: 5; /* 在小人层之上，房子层之下 */
-		transition: top var(--house-drop-duration) var(--house-drop-easing); 
-		background: transparent; /* 完全透明 */
-		pointer-events: none; /* 不影响交互 */
+    position: fixed; 
+    top: var(--house-from-top); 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: var(--house-width); 
+    height: var(--house-height);
+    z-index: 5; /* 在小人层之上，房子层之下 */
+    transition: top var(--house-drop-duration) var(--house-drop-easing); 
+    background: transparent; /* 完全透明 */
+    pointer-events: none; /* 不影响交互 */
 }
 .house-mask.show { 
-		top: var(--house-to-top);
+    top: var(--house-to-top);
 }
 .house-mask.lift { 
-		top: var(--house-lift-top); 
-		transition: top var(--house-lift-duration) var(--house-lift-easing);
+    top: var(--house-lift-top); 
+    transition: top var(--house-lift-duration) var(--house-lift-easing);
 }
 .slide-people { position: fixed; top: var(--people-area-top); left: 50%; margin-left: var(--slide-area-margin-left); z-index: 4; width: var(--slide-area-width); height: var(--slide-area-height); pointer-events: none;
 }
 .sperson { 
-		/* 基础定位由模板中的style设置 */
-		width: 165rpx; /* 🔧 修复：使用固定值替代CSS变量 */
-		height: 165rpx; 
-		opacity: 1; 
-		/* 🔧 修复：设置初始位置，避免闪烁 */
-		transform: translate3d(-700rpx, 0, 0);
-		will-change: transform; 
-		-webkit-backface-visibility: hidden; 
-		        backface-visibility: hidden;
+    /* 基础定位由模板中的style设置 */
+    width: var(--people-size); /* 使用CSS变量 */
+    height: var(--people-size); /* 使用CSS变量 */
+    opacity: 1; 
+    /* 🔧 修复：设置初始位置，避免闪烁 */
+    transform: translate3d(var(--people-slide-start), 0, 0);
+    will-change: transform; 
+    -webkit-backface-visibility: hidden; 
+            backface-visibility: hidden;
 }
-	
-	/* 🔧 新增：通用小人图片样式 */
+
+/* 🔧 新增：通用小人图片样式 */
 .person-image {
-		width: 100%;
-		height: 100%;
-		display: block;
+    width: 100%;
+    height: 100%;
+    display: block;
 }
 .sperson.run { animation: slide-pass var(--slide-duration) linear forwards;
 }
 @keyframes slide-pass {
 0% { 
-			transform: translate3d(-700rpx, 0, 0); /* 🔧 修复：使用固定值替代CSS变量 */
+        transform: translate3d(var(--people-slide-start), 0, 0); /* 使用CSS变量 */
 }
 100% { 
-			transform: translate3d(180rpx, 0, 0); /* 🔧 修复：使用固定值替代CSS变量 */
+        transform: translate3d(var(--people-slide-end), 0, 0); /* 使用CSS变量 */
 }
 }
-
-	/* 逃离容器与动画 - 小程序优化版 */
 .escape-people { 
-		position: fixed; 
-		top: var(--people-area-top); 
-		left: 50%; 
-		margin-left: var(--escape-area-margin-left); 
-		width: var(--escape-area-width); 
-		height: var(--escape-area-height); 
-		z-index: 6; 
-		pointer-events: none; 
-		overflow: visible;
+    position: fixed; 
+    top: var(--people-area-top); 
+    left: 50%; 
+    margin-left: var(--escape-area-margin-left); 
+    width: var(--escape-area-width); 
+    height: var(--escape-area-height); 
+    z-index: 6; 
+    pointer-events: none; 
+    overflow: visible;
 }
 .eperson { 
-		/* 基础定位由模板中的style设置 */
-		width: 165rpx; /* 🔧 修复：使用固定值替代CSS变量 */
-		height: 165rpx;
-		opacity: 1; 
-		/* 减少不必要的硬件加速属性 */
-		transform: translateZ(0);
-		/* 确保图片不会被拉伸 */
-		flex-shrink: 0;
+    /* 基础定位由模板中的style设置 */
+    width: var(--people-size); /* 使用CSS变量 */
+    height: var(--people-size); /* 使用CSS变量 */
+    opacity: 1; 
+    /* 减少不必要的硬件加速属性 */
+    transform: translateZ(0);
+    /* 确保图片不会被拉伸 */
+    flex-shrink: 0;
 }
 .pre { 
-		opacity: 1; 
-		transform: translateZ(0);
+    opacity: 1; 
+    transform: translateZ(0);
 }
+
 	
 	/* 使用更平滑的缓动函数，减少闪烁 */
 .escape-up { 

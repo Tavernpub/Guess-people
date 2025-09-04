@@ -319,88 +319,92 @@
 		 * 计算属性
 		 */
 		computed: {
-					/**
-		 * 根组件样式 - 动态设置CSS变量
-		 * 用于控制小人滑动动画的持续时间和房屋位置
-		 */
-		rootStyle() {
-			return `
-				--slide-duration: ${this.slideDurationMs}ms;
-				--house-from-top: ${HOUSE_CONFIG.animations.initialDrop.fromTop};
-				--house-to-top: ${HOUSE_CONFIG.animations.initialDrop.toTop};
-				--house-lift-top: ${HOUSE_CONFIG.animations.revealLift.toTop};
-				--house-drop-duration: ${HOUSE_CONFIG.animations.initialDrop.duration};
-				--house-lift-duration: ${HOUSE_CONFIG.animations.revealLift.duration};
-				--house-drop-easing: ${HOUSE_CONFIG.animations.initialDrop.easing};
-				--house-lift-easing: ${HOUSE_CONFIG.animations.revealLift.easing};
-				--house-width: ${this.responsiveHouseWidth};
-				--house-height: ${this.responsiveHouseHeight};
-				--people-size: ${PEOPLE_CONFIG.appearance.size};
-				--people-reveal-size: ${PEOPLE_CONFIG.appearance.revealSize};
-				--people-reveal-color: ${PEOPLE_CONFIG.appearance.revealRedColor};
-				--people-image: url('${PEOPLE_CONFIG.appearance.defaultImage}');
-				--people-slide-start: ${PEOPLE_CONFIG.animations.slideIn.startPosition};
-				--people-slide-end: ${PEOPLE_CONFIG.animations.slideIn.endPosition};
-				--people-slide-disappear: ${PEOPLE_CONFIG.animations.slideIn.disappearPosition};
-				--game-area-top: ${UI_CONFIG.layout.gameAreaTop};
-				--people-area-top: ${UI_CONFIG.layout.peopleAreaTop};
-				--title-top: ${UI_CONFIG.layout.titleTop};
-				--countdown-top: ${UI_CONFIG.layout.countdownTop};
-				--level-indicator-top: ${UI_CONFIG.layout.levelIndicatorTop};
-				--level-indicator-right: ${UI_CONFIG.layout.levelIndicatorRight};
-				--reveal-number-top: ${UI_CONFIG.layout.revealNumberTop};
-				--slide-area-width: ${UI_CONFIG.layout.slideAreaWidth};
-				--slide-area-height: ${UI_CONFIG.layout.slideAreaHeight};
-				--slide-area-margin-left: ${UI_CONFIG.layout.slideAreaMarginLeft};
-				--escape-area-width: ${UI_CONFIG.layout.escapeAreaWidth};
-				--escape-area-height: ${UI_CONFIG.layout.escapeAreaHeight};
-				--escape-area-margin-left: ${UI_CONFIG.layout.escapeAreaMarginLeft};
-				--reveal-area-width: ${UI_CONFIG.layout.revealAreaWidth};
-				--reveal-area-height: ${UI_CONFIG.layout.revealAreaHeight};
-				--reveal-area-margin-left: ${UI_CONFIG.layout.revealAreaMarginLeft};
-			`.replace(/\s+/g, ' ').trim()
-		},
-		
-		/**
-		 * 响应式房屋宽度 - 根据屏幕尺寸动态计算
-		 */
-		responsiveHouseWidth() {
-			if (!this.screenInfo.windowWidth) return HOUSE_CONFIG.width;
-			
-			// 基于屏幕宽度的比例，确保房屋在不同分辨率下都有合适的大小
-			// 标准宽度375px对应560rpx，按比例缩放
-			const baseWidth = 375;
-			const baseHouseWidth = 560;
-			const scale = Math.max(0.8, Math.min(1.5, this.screenInfo.windowWidth / baseWidth));
-			
-			return Math.round(baseHouseWidth * scale) + 'rpx';
-		},
-		
-		/**
-		 * 响应式房屋高度 - 确保能完全覆盖小人
-		 */
-		responsiveHouseHeight() {
-			if (!this.screenInfo.windowHeight) return HOUSE_CONFIG.height;
-			
-			// 计算小人区域的高度
-			const peopleSize = 165; // 小人尺寸 (rpx)
-			const peopleAreaHeight = peopleSize * 2 + 40; // 两排小人 + 间距
-			
-			// 房屋高度至少要比小人区域高30%，确保完全覆盖
-			const minHouseHeight = Math.round(peopleAreaHeight * 1.3);
-			
-			// 基础房屋高度
-			const baseHouseHeight = 330;
-			
-			// 根据屏幕高度调整，确保在小屏幕上房屋不会太大
-			const maxScreenRatio = 0.45; // 房屋最多占屏幕高度的45%
-			const maxHouseHeight = Math.round(this.screenInfo.windowHeight * maxScreenRatio * (750 / this.screenInfo.windowWidth));
-			
-			// 取合适的尺寸
-			const finalHeight = Math.max(minHouseHeight, Math.min(baseHouseHeight, maxHouseHeight));
-			
-			return finalHeight + 'rpx';
-		}
+    /**
+     * 动态设置CSS变量
+     * 用于控制小人滑动动画的持续时间和房屋位置
+     */
+    rootStyle() {
+        return `
+            --slide-duration: ${this.slideDurationMs}ms;
+            --house-from-top: ${HOUSE_CONFIG.animations.initialDrop.fromTop};
+            --house-to-top: ${HOUSE_CONFIG.animations.initialDrop.toTop};
+            --house-lift-top: ${HOUSE_CONFIG.animations.revealLift.toTop};
+            --house-drop-duration: ${HOUSE_CONFIG.animations.initialDrop.duration};
+            --house-lift-duration: ${HOUSE_CONFIG.animations.revealLift.duration};
+            --house-drop-easing: ${HOUSE_CONFIG.animations.initialDrop.easing};
+            --house-lift-easing: ${HOUSE_CONFIG.animations.revealLift.easing};
+            --house-width: ${HOUSE_CONFIG.width};
+            --house-height: ${HOUSE_CONFIG.height};
+            --people-size: ${PEOPLE_CONFIG.appearance.size};
+            --people-reveal-size: ${PEOPLE_CONFIG.appearance.revealSize};
+            --people-reveal-color: ${PEOPLE_CONFIG.appearance.revealRedColor};
+            --people-slide-start: ${PEOPLE_CONFIG.animations.slideIn.startPosition};
+            --people-slide-end: ${PEOPLE_CONFIG.animations.slideIn.endPosition};
+            --people-slide-disappear: ${PEOPLE_CONFIG.animations.slideIn.disappearPosition};
+            --people-reveal-red-color: ${PEOPLE_CONFIG.appearance.revealRedColor};
+            --game-area-top: ${UI_CONFIG.layout.gameAreaTop};
+            --people-area-top: ${UI_CONFIG.layout.peopleAreaTop};
+            --title-top: ${UI_CONFIG.layout.titleTop};
+            --countdown-top: ${UI_CONFIG.layout.countdownTop};
+            --level-indicator-top: ${UI_CONFIG.layout.levelIndicatorTop};
+            --level-indicator-right: ${UI_CONFIG.layout.levelIndicatorRight};
+            --reveal-number-top: ${UI_CONFIG.layout.revealNumberTop};
+            --slide-area-width: ${UI_CONFIG.layout.slideAreaWidth};
+            --slide-area-height: ${UI_CONFIG.layout.slideAreaHeight};
+            --slide-area-margin-left: ${UI_CONFIG.layout.slideAreaMarginLeft};
+            --escape-area-width: ${UI_CONFIG.layout.escapeAreaWidth};
+            --escape-area-height: ${UI_CONFIG.layout.escapeAreaHeight};
+            --escape-area-margin-left: ${UI_CONFIG.layout.escapeAreaMarginLeft};
+            --reveal-area-width: ${UI_CONFIG.layout.revealAreaWidth};
+            --reveal-area-height: ${UI_CONFIG.layout.revealAreaHeight};
+            --reveal-area-margin-left: ${UI_CONFIG.layout.revealAreaMarginLeft};
+        `.replace(/\s+/g, ' ').trim()
+    },
+    
+    /**
+     * 响应式房屋宽度 - 根据屏幕尺寸动态计算
+     * 基于屏幕宽度的比例，确保房屋在不同分辨率下都有合适的大小
+     * 标准宽度375px对应560rpx，按比例缩放
+     */
+    responsiveHouseWidth() {
+        if (!this.screenInfo.windowWidth) return HOUSE_CONFIG.width;
+        
+        const baseWidth = 375;
+        const baseHouseWidth = parseInt(HOUSE_CONFIG.width) || 560; // 使用配置值
+        const scale = Math.max(0.8, Math.min(1.5, this.screenInfo.windowWidth / baseWidth));
+        
+        return Math.round(baseHouseWidth * scale) + 'rpx';
+    },
+    
+    /**
+     * 响应式房屋高度 - 确保能完全覆盖小人
+     * 计算逻辑：
+     * 1. 计算小人区域的高度
+     * 2. 房屋高度至少要比小人区域高30%，确保完全覆盖
+     * 3. 根据屏幕高度调整，确保在小屏幕上房屋不会太大
+     */
+    responsiveHouseHeight() {
+        if (!this.screenInfo.windowHeight) return HOUSE_CONFIG.height;
+        
+        // 获取小人尺寸（rpx）
+        const peopleSize = parseInt(PEOPLE_CONFIG.appearance.size) || 165;
+        const peopleAreaHeight = peopleSize * 2 + 40; // 两排小人 + 间距
+        
+        // 房屋高度至少要比小人区域高30%
+        const minHouseHeight = Math.round(peopleAreaHeight * 1.3);
+        
+        // 基础房屋高度
+        const baseHouseHeight = parseInt(HOUSE_CONFIG.height) || 330;
+        
+        // 根据屏幕高度调整，确保在小屏幕上房屋不会太大
+        const maxScreenRatio = 0.45; // 房屋最多占屏幕高度的45%
+        const maxHouseHeight = Math.round(this.screenInfo.windowHeight * maxScreenRatio * (750 / this.screenInfo.windowWidth));
+        
+        // 取合适的尺寸
+        const finalHeight = Math.max(minHouseHeight, Math.min(baseHouseHeight, maxHouseHeight));
+        
+        return finalHeight + 'rpx';
+    }
 	},
 		
 		/**
@@ -3397,103 +3401,101 @@
 	.person { width: var(--people-reveal-size); display: block; }
 	.overlap { margin-left: -40rpx; }
 
-	.cover-image { 
-		position: fixed; 
-		top: var(--house-from-top);
-		left: 50%; 
-		transform: translateX(-50%); 
-		width: var(--house-width); 
-		z-index: 7; 
-		transition: top var(--house-drop-duration) var(--house-drop-easing); 
-	}
-	.cover-image.show { 
-		top: var(--house-to-top); 
-	}
-	.cover-image.lift { 
-		top: var(--house-lift-top); 
-		transition: top var(--house-lift-duration) var(--house-lift-easing); 
-	}
+.cover-image { 
+    position: fixed; 
+    top: var(--house-from-top);
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: var(--house-width); 
+    z-index: 7; 
+    transition: top var(--house-drop-duration) var(--house-drop-easing); 
+}
+.cover-image.show { 
+    top: var(--house-to-top); 
+}
+.cover-image.lift { 
+    top: var(--house-lift-top); 
+    transition: top var(--house-lift-duration) var(--house-lift-easing); 
+}
 
-	/* 透明遮罩层：与房子完全一致的尺寸和位置，用于碰撞检测 */
-	.house-mask { 
-		position: fixed; 
-		top: var(--house-from-top); 
-		left: 50%; 
-		transform: translateX(-50%); 
-		width: var(--house-width); 
-		height: var(--house-height);
-		z-index: 5; /* 在小人层之上，房子层之下 */
-		transition: top var(--house-drop-duration) var(--house-drop-easing); 
-		background: transparent; /* 完全透明 */
-		pointer-events: none; /* 不影响交互 */
-	}
-	.house-mask.show { 
-		top: var(--house-to-top); 
-	}
-	.house-mask.lift { 
-		top: var(--house-lift-top); 
-		transition: top var(--house-lift-duration) var(--house-lift-easing); 
-	}
+/* 透明遮罩层：与房子完全一致的尺寸和位置，用于碰撞检测 */
+.house-mask { 
+    position: fixed; 
+    top: var(--house-from-top); 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: var(--house-width); 
+    height: var(--house-height);
+    z-index: 5; /* 在小人层之上，房子层之下 */
+    transition: top var(--house-drop-duration) var(--house-drop-easing); 
+    background: transparent; /* 完全透明 */
+    pointer-events: none; /* 不影响交互 */
+}
+.house-mask.show { 
+    top: var(--house-to-top); 
+}
+.house-mask.lift { 
+    top: var(--house-lift-top); 
+    transition: top var(--house-lift-duration) var(--house-lift-easing); 
+}
 
-	.slide-people { position: fixed; top: var(--people-area-top); left: 50%; margin-left: var(--slide-area-margin-left); z-index: 4; width: var(--slide-area-width); height: var(--slide-area-height); pointer-events: none; }
-	.sperson { 
-		/* 基础定位由模板中的style设置 */
-		width: 165rpx; /* 🔧 修复：使用固定值替代CSS变量 */
-		height: 165rpx; 
-		opacity: 1; 
-		/* 🔧 修复：设置初始位置，避免闪烁 */
-		transform: translate3d(-700rpx, 0, 0);
-		will-change: transform; 
-		backface-visibility: hidden; 
-	}
-	
-	/* 🔧 新增：通用小人图片样式 */
-	.person-image {
-		width: 100%;
-		height: 100%;
-		display: block;
-	}
-	.sperson.run { animation: slide-pass var(--slide-duration) linear forwards; }
-	
+.slide-people { position: fixed; top: var(--people-area-top); left: 50%; margin-left: var(--slide-area-margin-left); z-index: 4; width: var(--slide-area-width); height: var(--slide-area-height); pointer-events: none; }
+.sperson { 
+    /* 基础定位由模板中的style设置 */
+    width: var(--people-size); /* 使用CSS变量 */
+    height: var(--people-size); /* 使用CSS变量 */
+    opacity: 1; 
+    /* 🔧 修复：设置初始位置，避免闪烁 */
+    transform: translate3d(var(--people-slide-start), 0, 0);
+    will-change: transform; 
+    backface-visibility: hidden; 
+}
 
-	
-	@keyframes slide-pass { 
-		0% { 
-			transform: translate3d(-700rpx, 0, 0); /* 🔧 修复：使用固定值替代CSS变量 */
-		} 
-		100% { 
-			transform: translate3d(180rpx, 0, 0); /* 🔧 修复：使用固定值替代CSS变量 */
-		} 
-	}
+/* 🔧 新增：通用小人图片样式 */
+.person-image {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.sperson.run { animation: slide-pass var(--slide-duration) linear forwards; }
 
-	/* 逃离容器与动画 - 小程序优化版 */
-	.escape-people { 
-		position: fixed; 
-		top: var(--people-area-top); 
-		left: 50%; 
-		margin-left: var(--escape-area-margin-left); 
-		width: var(--escape-area-width); 
-		height: var(--escape-area-height); 
-		z-index: 6; 
-		pointer-events: none; 
-		overflow: visible; 
-	}
-	
-	.eperson { 
-		/* 基础定位由模板中的style设置 */
-		width: 165rpx; /* 🔧 修复：使用固定值替代CSS变量 */
-		height: 165rpx;
-		opacity: 1; 
-		/* 减少不必要的硬件加速属性 */
-		transform: translateZ(0);
-		/* 确保图片不会被拉伸 */
-		flex-shrink: 0;
-	}
-	
-	.pre { 
-		opacity: 1; 
-		transform: translateZ(0);
-	}
+@keyframes slide-pass { 
+    0% { 
+        transform: translate3d(var(--people-slide-start), 0, 0); /* 使用CSS变量 */
+    } 
+    100% { 
+        transform: translate3d(var(--people-slide-end), 0, 0); /* 使用CSS变量 */
+    } 
+}
+
+.escape-people { 
+    position: fixed; 
+    top: var(--people-area-top); 
+    left: 50%; 
+    margin-left: var(--escape-area-margin-left); 
+    width: var(--escape-area-width); 
+    height: var(--escape-area-height); 
+    z-index: 6; 
+    pointer-events: none; 
+    overflow: visible; 
+}
+
+.eperson { 
+    /* 基础定位由模板中的style设置 */
+    width: var(--people-size); /* 使用CSS变量 */
+    height: var(--people-size); /* 使用CSS变量 */
+    opacity: 1; 
+    /* 减少不必要的硬件加速属性 */
+    transform: translateZ(0);
+    /* 确保图片不会被拉伸 */
+    flex-shrink: 0;
+}
+
+.pre { 
+    opacity: 1; 
+    transform: translateZ(0);
+}
+
 	
 	/* 使用更平滑的缓动函数，减少闪烁 */
 	.escape-up { 
